@@ -1,0 +1,22 @@
+{
+  "name": "database-file-storage",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/bin/www prod",
+    "dev": "nodemon src/bin/www dev",
+    "publish": "git add . && git commit -am \"AutoCommited\" && git push heroku master && git push hub master"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Brayan-724/file-database.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Brayan-724/file-database/issues"
+  },
+  "homepage": "https://github.com/Brayan-724/file-database#readme"
+}
