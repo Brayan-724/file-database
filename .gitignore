@@ -121,4 +121,6 @@ dist
 *.code-workspace
 
 ### Mongo DB ###
-*.mongodb
+playground.mongodb
+
+variables.env
