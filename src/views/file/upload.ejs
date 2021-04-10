@@ -11,6 +11,14 @@
 		<label for="name">Name: </label>
 		<input type="name" id="name" name="name">
 		<br>
+
+		<label for="private">Visibility: </label>
+		<select name="private" id="private" required>
+			<option value="null" disabled selected> Choose </option>
+			<option value="private">Private</option>
+			<option value="public">Public</option>
+		</select>
+		<br>
 		
 		<label for="file">File: </label>
 		<input type="file" id="file" name="file" required>

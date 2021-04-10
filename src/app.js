@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const fileUpload = require('express-fileupload');
 const mongoose = require('mongoose');
+const cors = require('cors');
 require('dotenv').config({path: '.env'});
 
 const app = express();
@@ -29,6 +30,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Init mongo database
 const db = require('./helpers/mongo')(process.env.DB_URL);
+
+
+app.use(cors());
 
 // Import routes
 let Routes = require('./Routes')(app, auth, adminAuth);

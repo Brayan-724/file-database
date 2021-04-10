@@ -7,9 +7,14 @@ const GUID = require('../../helpers/guid');
  * 
  * @param {string} name 
  * @param {fileUpload.UploadedFile} file 
+ * @param {boolean} isPrivate
  */
-async function SaveFileToDB(name, file) {
-	const guid = GUID.L0.generate();
+async function SaveFileToDB(name, file, isPrivate) {
+	const guid = GUID.L0.uuid();
+	const tokens = [];
+
+	if(!isPrivate) tokens.push("0");
+	else tokens.push(GUID.L0.token.generate())
 
 	const fileModel = new MODEL.File({
 		name: file.name,
@@ -22,9 +27,10 @@ async function SaveFileToDB(name, file) {
 		guid: guid,
 		fileName: name,
 		file: fileModel,
+		tokens: tokens
 	});
 
-	return Model;
+	return `${process.env.host}/file/${guid}/${tokens[0]}/file`;
 }
 
 module.exports = require("../../helpers/Routes/exports")("/upload", (router, Auth, AdminAuth) => {
@@ -34,13 +40,14 @@ module.exports = require("../../helpers/Routes/exports")("/upload", (router, Aut
 
 	router.post("/", async (req, res) => {
 		const fileName = req.body.name;
+		const isPrivate = req.body.private === "private";
 		const file = req.files.file;
 		
-		const model = await SaveFileToDB(fileName, file);
+		const modelUrl = await SaveFileToDB(fileName, file, isPrivate);
 
 		res
 			.status(200)
-			.contentType("json")
-			.send(JSON.stringify(model));
+			.contentType("text/plain")
+			.send(modelUrl);
 	});
 })

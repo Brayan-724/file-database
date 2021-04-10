@@ -13,6 +13,7 @@ const _Model = new Schema({
     guid: String,
     fileName: String,
     file: _File,
+    tokens: [String]
 });
 const Model = mongoose.model('file', _Model, 'Files');
 
