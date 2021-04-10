@@ -13,10 +13,10 @@ var http = require('http');
  */
 process.env.stage = process.argv[2].toLowerCase() == "dev" ? "dev" : "prod";
 process.env.isDev = process.env.stage == "dev";
-process.env.host = process.env.isDev? "http://192.168.100.9:1403" : "https://db--storage.herokuapp.com";
+process.env.host = process.env.isDev === "true" ? "http://192.168.100.9:1403" : "https://db--storage.herokuapp.com";
 
 var port = normalizePort(process.env.PORT || '1403');
-var host = process.env.isDev ?  "192.168.100.9" : undefined
+var host = process.env.isDev === "true"?  "192.168.100.9" : undefined
 app.set('port', port);
 app.set('host', host);
 
