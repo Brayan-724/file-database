@@ -18,16 +18,18 @@ async function GETFile(guid) {
  * @returns {{guid: String, fileName: String, file: {name: String, data: Buffer, type: String, size: Number}, tokens: String[]}?} 
  */
 async function middleGet([_guid, _token] = [], res) {
-	const db = await GETFile(_guid);
 	const token = _token;
+	const isAdmin = token === process.env.adminCode
 
-	if(token !== "0" && token !== process.env.adminCode && !GUID.L0.token.validate(token)) {
+	if(token !== "0" && !isAdmin) 
+	if(!GUID.L0.token.validate(token)) {
 		res.sendStatus(403);
 		return;
 	}
 
+	const db = await GETFile(_guid);
 	if(db.success && db.data.length > 0) {
-		if(db.data[0].tokens[0] !== token) res.sendStatus(403);
+		if(!isAdmin && db.data[0].tokens[0] !== token) res.sendStatus(403);
 		return db.data[0];
 	} else {
 		res.sendStatus(404);
@@ -55,7 +57,7 @@ module.exports = require("../../helpers/Routes/exports")("/file", (router, Auth,
 		const data = await middleGet([req.body.guid, req.body.token], res);
 		
 		if(data) {
-			res.contentType(data.file.type).status(200).send(data.file.data);
+			res.status(200).contentType(data.file.type).send(data.file.data);
 		}
 	});
 	router.get("/:guid/:token/file", async (req, res) => {
