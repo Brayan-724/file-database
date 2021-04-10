@@ -59,11 +59,15 @@ module.exports = require("../../helpers/Routes/exports")("/file", (router, Auth,
 		}
 	});
 	router.get("/:guid/:token/file", async (req, res) => {
-		const r = await axios.get(process.env.host+"/file",{
-			data: req.params
-		});
+		try{
+			const r = await axios.get(process.env.host+"/file",{
+				data: req.params
+			});
 
-		res.status(r.status).contentType(r.headers['content-type']).send(r.data)
+			res.status(r.status).contentType(r.headers['content-type']).send(r.data)
+		} catch(e) {
+			res.sendStatus(e.request.res.statusCode);
+		}
 	});
 
 	router.put("/:guid/:token/", async (req, res) => {
