@@ -53,7 +53,7 @@ function form(data) {
 module.exports = require("../../helpers/Routes/exports")("/file", (router, Auth, AdminAuth) => {
 	
 	router.get("/", async (req, res) => {
-		console.log(req.body);
+		
 		const data = await middleGet([req.body.guid, req.body.token], res);
 		
 		if(data) {
