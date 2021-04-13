@@ -116,16 +116,12 @@ function validateTokenL0(token) {
 }
 
 
-
-if(require.main !== module) {
-	module.exports = {
-		L0: {
-			uuid: uuidvL0,
-			token: {
-				generate: validatedTokenvL0,
-				validate: validateTokenL0
-			}
+module.exports = {
+	L0: {
+		uuid: uuidvL0,
+		token: {
+			generate: validatedTokenvL0,
+			validate: validateTokenL0
 		}
 	}
-} else {
 }

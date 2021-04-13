@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Update file</title>
+	<style>
+		.grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			max-width: 1000px;
+			width: 50%;
+		}
+	</style>
+</head>
+<body>
+	<form action="/update" method="POST" enctype="multipart/form-data">
+		<div class="grid">
+			<label for="guid">GUID: </label>
+			<input type="text" name="guid" id="guid">
+
+			<label for="token">Auth Token: </label>
+			<input type="password" name="token" id="token">
+
+			<label for="file">New file: </label>
+			<input type="file" name="file" id="file">
+
+			<button type="submit">Update</button>
+		</div>
+	</form>
+</body>
+</html>

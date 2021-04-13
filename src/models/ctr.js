@@ -101,9 +101,9 @@ module.exports = function(Model) {
         }
     
     // REMOVERS
-        exp.remove = async (id) => {
+        exp.remove = async (filter) => {
             try {
-                await Model.findByIdAndDelete(id);
+                await Model.deleteMany(filter);
                 return {
                     success: true
                 }

@@ -1,7 +1,11 @@
 const CTRL = require("../../models/file/controller");
 const GUID = require("../../helpers/guid");
-const FormData = require("form-data");
-const axios = require("axios").default;
+const DB = require("../../helpers/db");
+const fileUpload = require("express-fileupload");
+
+/**
+ * @typedef {{_id: {$oid: string}, guid: String, fileName: String, file: {name: String, data: Buffer, type: String, size: Number}, tokens: String[]}} file
+ */
 
 /**
  * 
@@ -13,23 +17,45 @@ async function GETFile(guid) {
 
 /**
  * 
+ * @param {string} token 
+ * @returns {{isAdmin: Boolean, isValid: Boolean, level: number}}
+ */
+async function firstVerify(token) {
+	const isAdmin = token === process.env.adminCode;
+	const isValid = isAdmin || token === "0" || GUID.L0.token.validate(token);
+
+	return {
+		isAdmin: isAdmin,
+		isValid: isValid,
+
+		level: isAdmin ? 2 : isValid ? 1 : 0
+	}
+}
+
+/**
+ * 
  * @param {Express.Request} req 
  * @param {Express.Response} res
- * @returns {{guid: String, fileName: String, file: {name: String, data: Buffer, type: String, size: Number}, tokens: String[]}?} 
+ * @returns {file|undefined} 
  */
 async function middleGet([_guid, _token] = [], res) {
-	const token = _token;
-	const isAdmin = token === process.env.adminCode
+	if(_guid == null && _token == null) {
+		res.sendStatus(400);
+		return;
+	}
+	const token = await firstVerify(_token);
 
-	if(token !== "0" && !isAdmin) 
-	if(!GUID.L0.token.validate(token)) {
+	if(token.level === 0) {
 		res.sendStatus(403);
 		return;
 	}
 
 	const db = await GETFile(_guid);
 	if(db.success && db.data.length > 0) {
-		if(!isAdmin && db.data[0].tokens[0] !== token) res.sendStatus(403);
+		if(!token.isAdmin && db.data[0].tokens[0] !== _token) {
+			res.sendStatus(403);
+			return;
+		}
 		return db.data[0];
 	} else {
 		res.sendStatus(404);
@@ -40,43 +66,61 @@ async function middleGet([_guid, _token] = [], res) {
 
 /**
  * 
- * @param {Document} data 
+ * @param {string} guid 
+ * @param {string} token 
+ * @param {Express.Response} res 
  */
-function form(data) {
-	const formData = new FormData();
-	for(let n in data) {
-		formData.append(n, data[n]);
+ async function routerGet(guid, token, res) {
+	const data = await middleGet([guid, token], res);
+	
+	if(data) {
+		res.status(200).contentType(data.file.type).send(data.file.data);
 	}
-	return formData;
+}
+
+/**
+ * 
+ * @param {string} guid 
+ * @param {string} token 
+ * @param {fileUpload.UploadedFile} file
+ * @param {Express.Response} res 
+ */
+ async function routerPut(guid, token, file, res) {
+	const data = await middleGet([guid, token], res);
+
+	if(!data) return;
+	
+	let e;
+	if(e = CTRL.remove({guid: guid})) {
+		await DB.SaveFileToDB(data.fileName, file, data.tokens[0] !== "0", {
+			guid: guid,
+			tokens: data.tokens
+		});
+
+		res.sendStatus(200);
+	} else {
+		console.log(e);
+		res.sendStatus(500);
+	};
 }
 
 module.exports = require("../../helpers/Routes/exports")("/file", (router, Auth, AdminAuth) => {
-	
+	/* --- API paths --- */
 	router.get("/", async (req, res) => {
-		
-		const data = await middleGet([req.body.guid, req.body.token], res);
-		
-		if(data) {
-			res.status(200).contentType(data.file.type).send(data.file.data);
-		}
+		await routerGet(req.body.guid, req.body.token, res);
 	});
-	router.get("/:guid/:token/file", async (req, res) => {
-		try{
-			const r = await axios.get(process.env.host+"/file",{
-				data: req.params
-			});
 
-			res.status(r.status).contentType(r.headers['content-type']).send(r.data)
-		} catch(e) {
-			res.sendStatus(e.request.res.statusCode);
-		}
+	router.put("/", async (req, res) => {
+		await routerPut(req.body.guid, req.body.token, req.files.file, res);
+	});
+
+
+	/* --- Client paths --- */
+	router.get("/:guid/:token/file", async (req, res) => {
+		await routerGet(req.params.guid, req.params.token, res);
 	});
 
 	router.put("/:guid/:token/", async (req, res) => {
-		const data = await middleGet(req, res);
-
-		if(data) {
-			res.contentType(data.file.type).status(200).send(data.file.data);
-		}
+		await routerPut(req.body.guid, req.body.token, req.files.file, res);
 	});
 })

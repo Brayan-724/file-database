@@ -1,8 +1,24 @@
 const CTRL = require("../../models/file/controller");
 
+function noTokens(obj) {
+	if(obj.success) {
+		return {
+			seccess: true,
+			data: obj.data.map((v) => {
+				v.tokens = "MR. HACKER";
+				return v;
+			})
+		}
+	}
+
+	return obj;
+}
+
 module.exports = require("../../helpers/Routes/exports")("/getAll", (router, Auth, AdminAuth) => {
 	router.get("/", async (req, res, next) => {
-		const db = await CTRL.getAll();
+		let db = await CTRL.getAll();
+
+		db = noTokens(db);
 
 		res.contentType("json");
 		res.status(200);
