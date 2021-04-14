@@ -6,6 +6,7 @@ function noTokens(obj) {
 			seccess: true,
 			data: obj.data.map((v) => {
 				v.tokens = "MR. HACKER";
+				v.file.data = "MR. HACKER";
 				return v;
 			})
 		}
