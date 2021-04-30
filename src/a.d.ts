@@ -7,12 +7,8 @@ namespace Routes {
         thisRoute: string;
     }
 
-    type Routes = {
-        
-    }
-
-    type AuthFunction = (req: Request, res: Response, next: NextFunction) => {};
-    type AdminAuthFunction = (req: Request, res: Response, next: NextFunction) => {};
+    type AuthFunction = (req: Request<Document, any, any, qs.ParsedQs, Record<String, any>>, res: Response<any, Record<String, any>>, next: NextFunction) => {};
+    type AdminAuthFunction = (req: Request<Document, any, any, qs.ParsedQs, Record<String, any>>, res: Response<any, Record<String, any>>, next: NextFunction) => {};
 
     type _exports_callback = (router: Router, Auth: AuthFunction, AdminAuth: AdminAuthFunction) => {}
 
@@ -21,5 +17,5 @@ namespace Routes {
 
     declare function relFunc(v: Route): string[];
     
-    type _Routes = (App: Express, Auth: Routes.AuthFunction, AdminAuth: AdminAuthFunction) => Routes.Routes;
+    type _Routes = (App: Express, Auth: Routes.AuthFunction, AdminAuth: Routes.AdminAuthFunction) => void;
 }
