@@ -1,7 +1,7 @@
-const MODEL = require("../../models/file/model");
-const CTRL = require("../../models/file/controller");
+const MODEL = require("../../../models/file/model");
+const CTRL = require("../../../models/file/controller");
 const fileUpload = require("express-fileupload");
-const GUID = require('../../helpers/guid');
+const GUID = require('../../../helpers/guid');
 
 /**
  * 
@@ -33,7 +33,7 @@ async function SaveFileToDB(name, file, isPrivate) {
 	return `${process.env.host}/file/${guid}/${tokens[0]}/file`;
 }
 
-module.exports = require("../../helpers/Routes/exports")("/upload", (router, Auth, AdminAuth) => {
+module.exports = require("../../../helpers/Routes/exports")("/upload", (router, Auth, AdminAuth) => {
 	router.get("/", (req, res) => {
 		res.render("file/upload");
 	});

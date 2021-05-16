@@ -1,3 +1,6 @@
+import mongo = require("mongoose");
+
+
 declare function _exports(Model: mongo.Model<any, any>): {
     schema: mongo.Model<any, any>;
     getAll(): Promise<{
@@ -43,4 +46,3 @@ declare function _exports(Model: mongo.Model<any, any>): {
     }>;
 };
 export = _exports;
-import mongo = require("mongoose");

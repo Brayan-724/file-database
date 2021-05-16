@@ -1,6 +1,6 @@
-const CTRL = require("../../models/file/controller");
-const GUID = require("../../helpers/guid");
-const DB = require("../../helpers/db");
+const CTRL = require("../../../models/file/controller");
+const GUID = require("../../../helpers/guid");
+const DB = require("../../../helpers/db");
 const fileUpload = require("express-fileupload");
 
 /**
@@ -89,7 +89,7 @@ async function middleGet([_guid, _token] = [], res) {
 	};
 }
 
-module.exports = require("../../helpers/Routes/exports")("/update", (router, Auth, AdminAuth) => {
+module.exports = require("../../../helpers/Routes/exports")("/update", (router, Auth, AdminAuth) => {
 	router.get("/", (req, res) => {
 		res.render("file/update");
 	});

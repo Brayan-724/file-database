@@ -21,4 +21,4 @@ const Model = mongoose.model('file', _Model, 'Files');
  * @property {mongoose.Model} File
  * @property {mongoose.Model} Model
  */
-module.exports = {File, Model};
+module.exports = { File, Model };

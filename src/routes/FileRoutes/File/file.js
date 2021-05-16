@@ -1,6 +1,6 @@
-const CTRL = require("../../models/file/controller");
-const GUID = require("../../helpers/guid");
-const DB = require("../../helpers/db");
+const CTRL = require("../../../models/file/controller");
+const GUID = require("../../../helpers/guid");
+const DB = require("../../../helpers/db");
 const fileUpload = require("express-fileupload");
 
 /**
@@ -104,9 +104,26 @@ async function middleGet([_guid, _token] = [], res) {
 	};
 }
 
-module.exports = require("../../helpers/Routes/exports")("/file", (router, Auth, AdminAuth) => {
+/**
+ * 
+ * @param {string} guid 
+ * @param {string} token 
+ * @param {Express.Response} res 
+ */
+async function routerGetAPI(guid, token, res) {
+	const data = await middleGet([guid, token], res);
+	
+	if(data) {
+		res.status(200).contentType("json").send(data);
+	}
+}
+
+module.exports = require("../../../helpers/Routes/exports")("/file", (router, Auth, AdminAuth) => {
 	/* --- API paths --- */
 	router.get("/", async (req, res) => {
+		await routerGetAPI(req.body.guid, req.body.token, res);
+	});
+	router.get("/file", async (req, res) => {
 		await routerGet(req.body.guid, req.body.token, res);
 	});
 
@@ -116,6 +133,9 @@ module.exports = require("../../helpers/Routes/exports")("/file", (router, Auth,
 
 
 	/* --- Client paths --- */
+	router.get("/:guid/:token/file", async (req, res) => {
+		await routerGetAPI(req.params.guid, req.params.token, res);
+	});
 	router.get("/:guid/:token/file", async (req, res) => {
 		await routerGet(req.params.guid, req.params.token, res);
 	});

@@ -1,0 +1,1 @@
+module.exports = require("../helpers/Routes/imports")("/", [require("./FileRoutes/file"), require("./FileRoutes/files")]);

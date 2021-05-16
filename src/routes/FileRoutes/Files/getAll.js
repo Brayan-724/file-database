@@ -1,4 +1,4 @@
-const CTRL = require("../../models/file/controller");
+const CTRL = require("../../../models/file/controller");
 
 function noTokens(obj) {
 	if(obj.success) {
@@ -15,7 +15,7 @@ function noTokens(obj) {
 	return obj;
 }
 
-module.exports = require("../../helpers/Routes/exports")("/getAll", (router, Auth, AdminAuth) => {
+module.exports = require("../../../helpers/Routes/exports")("/getAll", (router, Auth, AdminAuth) => {
 	router.get("/", async (req, res, next) => {
 		let db = await CTRL.getAll();
 

@@ -1,7 +1,7 @@
 /** @type {import("./a").Routes.Route[]} */
 const rts = [
-    require("./routes/files"),
-    require("./routes/file")
+    require("./routes/fileRoutes"),
+    require("./routes/userRoutes")
 ]
 
 /** @type {import("./Routes")} */
