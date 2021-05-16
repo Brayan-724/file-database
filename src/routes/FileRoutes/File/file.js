@@ -133,7 +133,7 @@ module.exports = require("../../../helpers/Routes/exports")("/file", (router, Au
 
 
 	/* --- Client paths --- */
-	router.get("/:guid/:token/file", async (req, res) => {
+	router.get("/:guid/:token/", async (req, res) => {
 		await routerGetAPI(req.params.guid, req.params.token, res);
 	});
 	router.get("/:guid/:token/file", async (req, res) => {
