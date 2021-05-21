@@ -1,1 +1,1 @@
-module.exports = require("../../helpers/Routes/imports")("/files", [require("./Files/getAll")]);
+module.exports = require("../../helpers/Routes/imports")("/files", [require("./Files/files"), require("./Files/getAll")]);

@@ -1,7 +1,8 @@
 const CTRL = require("../../../models/file/controller");
 const GUID = require("../../../helpers/guid");
-const DB = require("../../../helpers/db");
+const { SaveFileToDB } = require("../../../helpers/db");
 const fileUpload = require("express-fileupload");
+const { dataForCommonUser } = require("../../../helpers/resolveData");
 
 /**
  * @typedef {{_id: {$oid: string}, guid: String, fileName: String, file: {name: String, data: Buffer, type: String, size: Number}, tokens: String[]}} file
@@ -64,6 +65,8 @@ async function middleGet([_guid, _token] = [], res) {
 	return;
 }
 
+
+//#region Routers
 /**
  * 
  * @param {string} guid 
@@ -92,7 +95,7 @@ async function middleGet([_guid, _token] = [], res) {
 	
 	let e;
 	if(e = CTRL.remove({guid: guid})) {
-		await DB.SaveFileToDB(data.fileName, file, data.tokens[0] !== "0", {
+		await SaveFileToDB(data.fileName, file, data.tokens[0] !== "0", {
 			guid: guid,
 			tokens: data.tokens
 		});
@@ -113,10 +116,39 @@ async function middleGet([_guid, _token] = [], res) {
 async function routerGetAPI(guid, token, res) {
 	const data = await middleGet([guid, token], res);
 	
+	res.contentType("json");
+
 	if(data) {
-		res.status(200).contentType("json").send(data);
+		const tokenLevel = (await firstVerify(token)).level;
+		if(tokenLevel == 0) {
+			res.status(403).send({
+				success: false,
+				data: {
+					status: 403,
+					message: "Token no valid",
+					stack: ""
+				}
+			});
+		} else 
+		if(tokenLevel == 1) {
+			res.status(200).send(dataForCommonUser(data));
+		} else 
+		if(tokenLevel == 2) {
+			res.status(200).send(data);
+		} else {
+			res.status(400).send({
+				success: false,
+				data: {
+					status: 500,
+					message: "No can possible verify this token",
+					stack: ""
+				}
+			});
+		}
 	}
 }
+
+//#endregion
 
 module.exports = require("../../../helpers/Routes/exports")("/file", (router, Auth, AdminAuth) => {
 	/* --- API paths --- */

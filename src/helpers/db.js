@@ -21,7 +21,7 @@ async function SaveFileToDB(name, file, isPrivate, opt = {}) {
 	const guid = opt?.guid || GUID.L0.uuid();
 	const tokens = opt?.tokens || [];
 
-	if(!isPrivate) tokens.push("0");
+	if(!isPrivate && tokens.indexOf("0") === -1) tokens.push("0");
 	else tokens.push(GUID.L0.token.generate())
 
 	const fileModel = new MODEL.File({

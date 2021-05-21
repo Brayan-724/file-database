@@ -1,14 +1,11 @@
 const CTRL = require("../../../models/file/controller");
+const { dataForCommonUser } = require("../../../helpers/resolveData");
 
 function noTokens(obj) {
 	if(obj.success) {
 		return {
 			success: true,
-			data: obj.data.map((v) => {
-				v.tokens = "MR. HACKER";
-				v.file.data = Buffer.from("MR. HACKER");
-				return v;
-			})
+			data: obj.data.map(dataForCommonUser)
 		}
 	}
 
