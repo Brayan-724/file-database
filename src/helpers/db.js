@@ -31,7 +31,7 @@ async function SaveFileToDB(name, file, isPrivate, opt = {}) {
 		type: file.mimetype
 	});
 
-	const Model = await CTRL.add({
+	await CTRL.add({
 		guid: guid,
 		fileName: name,
 		file: fileModel,
